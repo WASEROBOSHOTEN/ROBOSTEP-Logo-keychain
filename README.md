@@ -19,6 +19,7 @@ ESP32がWi-Fiアクセスポイントとして動作し、Webブラウザ（iOS/
 2.  **必要なライブラリのインストール:**
     * 「ライブラリを管理」から以下のライブラリをインストールします。
         * `ESPAsyncWebServer`
+        * `AsyncTCP`
         * `ArduinoJson`
 
 3.  **LittleFS Uploaderのインストール:**
