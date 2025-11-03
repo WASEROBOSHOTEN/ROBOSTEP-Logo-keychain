@@ -65,6 +65,7 @@ ESP32がWi-Fiアクセスポイントとして動作し、Webブラウザ（iOS/
 
 ## 📂 プロジェクトのファイル構成  
 
+<pre>
 Rikoten_APMode/
 ├── Rikoten_APMode.ino
 ├── robot_params.h
@@ -76,3 +77,4 @@ Rikoten_APMode/
 └── data/
     ├── index.html
     └── nipplejs.min.js
+</pre>
