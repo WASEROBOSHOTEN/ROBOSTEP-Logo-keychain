@@ -65,14 +65,14 @@ ESP32がWi-Fiアクセスポイントとして動作し、Webブラウザ（iOS/
 
 ## 📂 プロジェクトのファイル構成  
 
-Rikoten_APMode
-├── Rikoten_APMode.ino        // メインスケッチ、Ticker制御ループ  
-├── robot_params.h            // 全てのピン設定、物理パラメータ、チューニング値  
-├── OmniController.h          // オムニホイールの運動学クラス  
-├── RobotHardware.h           // ハードウェア（モーター、サーボ、LED）の抽象化クラス  
-├── RobotHardware.cpp         //  
-├── WebServerManager.h        // WebサーバーとWebSocketの管理クラス  
-├── WebServerManager.cpp      //  
-└── data                     // LittleFSに書き込むデータ/  
-    ├── index.html            // コントローラUI本体  
-    └── nipplejs.min.js       // UI用JavaScriptライブラリ  
+Rikoten_APMode/
+├── Rikoten_APMode.ino
+├── robot_params.h
+├── OmniController.h
+├── RobotHardware.h
+├── RobotHardware.cpp
+├── WebServerManager.h
+├── WebServerManager.cpp
+└── data/
+    ├── index.html
+    └── nipplejs.min.js
