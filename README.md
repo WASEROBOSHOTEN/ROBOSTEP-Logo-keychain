@@ -1,81 +1,47 @@
-# ESP32使用 オムニホイールロボット制御基板
+# CH32V003使用 ROBOSTEP ロゴキーホルダー
 
-スマートフォンからWi-Fi経由で操作できる、3輪オムニホイールロボットと2軸サーボアームの制御プロジェクトです。
+## 概要
 
-ESP32がWi-Fiアクセスポイントとして動作し、Webブラウザ（iOS/Android対応）にコントローラのUIを提供します。  
-通信はなWebSocketで行われ、リアルタイムな操作とテレメトリの受信が可能です。
+CH32V003J4M6を使用し、わずか5本のGPIOピンで20個のLEDを制御するプロジェクトです。
 
----
+**チャーリープレクシング (Charlieplexing)** 回路構成と、タイマー割り込みによる**ダイナミック点灯**（残像効果）を組み合わせて、複雑なLEDアニメーションを実現しています。
 
-## 🚀 使い方 (セットアップ)
+## ハードウェア構成
 
-### 1. Arduino IDE のセットアップ
+* **MCU:** CH32V003J4M6
+* **LED制御 (5ピン):**
+    * `GPIOA, GPIO_Pin_1` (PA1)
+    * `GPIOA, GPIO_Pin_2` (PA2)
+    * `GPIOC, GPIO_Pin_1` (PC1)
+    * `GPIOC, GPIO_Pin_2` (PC2)
+    * `GPIOC, GPIO_Pin_4` (PC4)
+* **LED数:** 20個
+* **入力:** `GPIOD, GPIO_Pin_1` (PD1) に接続されたタクトスイッチ (モード切替用)
 
-1.  **ESP32ボード定義のインストール:**
-    * Arduino IDEの「環境設定」>「追加のボードマネージャURL」に以下を追加します。
-        `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`
-    * 「ボードマネージャ」で `esp32` を検索し、インストールします。
+## 開発環境
 
-2.  **必要なライブラリのインストール:**
-    * 「ライブラリを管理」から以下のライブラリをインストールします。
-        * `ESPAsyncWebServer`
-        * `AsyncTCP`
-        * `ArduinoJson`
+* **IDE:** MounRiver Studio
 
-3.  **LittleFS Uploaderのインストール:**
-    * [ESP32 LittleFS Uploader](https://github.com/earlephilhower/arduino-littlefs-upload) のリリースページから `ESP32FS-*.zip` をダウンロードします。
-    * Arduinoの `tools` フォルダ（例: `Documents/Arduino/tools/`）に解凍して配置し、Arduino IDEを再起動します。  
-    [こちらのサイトも参照してください。](https://qiita.com/kumakumao/items/be51f174bfeb0e4a6a06)  
+## 使用方法
 
-### 2. UIファイルの書き込み
+このリポジトリは `main.c` のみを提供しています。プロジェクトをビルドするには、以下の手順に従ってください。
 
-1.  このプロジェクトの `data` フォルダ内に `index.html` と `nipplejs.min.js` を配置します。
-2.  Arduino IDEでCtrl+Shift+Pでコマンドパレットを開き、「Upload LittleFS to Pico/ESP8266/ESP32」を実行します。
-3.  data配下のファイルが自動的にアップロードされ、CompletedUploadと表示されれば完了です。
+1.  **MounRiver Studio** で CH32V003 用の新しいプロジェクトを作成します。
+2.  プロジェクトが自動生成した `main.c` の中身を、このリポジトリの `main.c` の内容で置き換えてください。
+3.  下記「注意事項」に従い、システムクロックの設定を変更してください。
+4.  ビルドして書き込みます。
 
-### 3. スケッチの書き込み
+## 注意事項：システムクロックの設定
 
-1.  `Rikoten_APMode.ino`を開きます。
-2.  **[ツール] > [ボード]** で `ESP32 Dev Module` などを選択します。
-3.  「→」（マイコンに書き込む）ボタンを押します。
-4.  ESP32基板の `BOOT` (GPIO 0) ボタンを押しながら `RESET` (EN) ボタンを押してdowndoal modeに入ります。
-5.  書き込みの終了後，ESPをリセットすると動作が始まります。
+このコードは、`SysTick` と `TIM1` のタイマーが **48MHz** のシステムクロック（SYSCLK）で動作することを前提に設計されています。
 
-### 4. 操作方法
+MounRiver Studioが生成するデフォルトの `system_ch32v00x.c` ファイルを開き、システムクロックの定義を **48MHz (HSI)** に変更する必要があります。
 
-1.  ESP32の電源を入れます。
-2.  スマートフォンやPCのWi-Fi設定を開き、`ESP_Robot_WiFi` に接続します。（パスワード: `1234567890`）
-3.  任意のWebブラウザを開き、アドレスバーに `192.168.4.1` と入力します。
-4.  コントローラUIが表示されます。
-
----
-
-## 🛠️ システム構成
-
-1.  **スマートフォン (クライアント):**
-    * `ESP_Robot_WiFi` に接続し、`192.168.4.1` にアクセス。
-    * `index.html` のUIを操作し、`controlState` JSONなどをWebSocketで送信。
-2.  **ESP32 (サーバー):**
-    * `WebServerManager` がWebSocketでJSONを受信し、グローバル変数を更新。
-    * `Rikoten_APMode.ino` の `Ticker` (`updateControl`) が10msごとにグローバル変数を読み取る。
-    * `OmniController` が `vx, vy, omega` を3輪の `power` 値に変換。
-    * `RobotHardware` が `power` 値をデッドゾーン補正 し、`ledcWrite` でモーターを駆動。
-    * `RobotHardware` がサーボの角度を `setServoAngle` で制御。
-
----
-
-## 📂 プロジェクトのファイル構成  
-
-<pre>
-Rikoten_APMode/
-├── Rikoten_APMode.ino        // メインスケッチ、Ticker制御ループ
-├── robot_params.h            // 全てのピン設定、物理パラメータ、チューニング値
-├── OmniController.h          // オムニホイールの運動学クラス
-├── RobotHardware.h           // ハードウェア（モーター、サーボ、LED）の抽象化クラス
-├── RobotHardware.cpp         // 
-├── WebServerManager.h        // WebサーバーとWebSocketの管理クラス
-├── WebServerManager.cpp      //
-└── data/                     // LittleFSに書き込むデータ
-    ├── index.html            // コントローラUI本体
-    └── nipplejs.min.js       // UI用JavaScriptライブラリ
-</pre>
+**変更前:**
+```c
+//#define SYSCLK_FREQ_8MHz_HSI    8000000
+//#define SYSCLK_FREQ_24MHZ_HSI   HSI_VALUE
+#define SYSCLK_FREQ_48MHZ_HSI   48000000  //この行をコメントアウト
+//#define SYSCLK_FREQ_8MHz_HSE    8000000
+//#define SYSCLK_FREQ_24MHz_HSE   HSE_VALUE
+// #define SYSCLK_FREQ_48MHz_HSE   48000000
