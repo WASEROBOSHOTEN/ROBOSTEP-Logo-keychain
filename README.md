@@ -23,7 +23,7 @@ ESP32がWi-Fiアクセスポイントとして動作し、Webブラウザ（iOS/
         * `ArduinoJson`
 
 3.  **LittleFS Uploaderのインストール:**
-    * [ESP32 LittleFS Uploader](https://github.com/earlephilhower/arduino-esp32-littlefs-plugin) のリリースページから `ESP32FS-*.zip` をダウンロードします。
+    * [ESP32 LittleFS Uploader](https://github.com/earlephilhower/arduino-littlefs-upload) のリリースページから `ESP32FS-*.zip` をダウンロードします。
     * Arduinoの `tools` フォルダ（例: `Documents/Arduino/tools/`）に解凍して配置し、Arduino IDEを再起動します。
 
 ### 2. UIファイルの書き込み
