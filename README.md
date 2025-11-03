@@ -19,12 +19,12 @@ ESP32がWi-Fiアクセスポイントとして動作し、Webブラウザ（iOS/
 2.  **必要なライブラリのインストール:**
     * 「ライブラリを管理」から以下のライブラリをインストールします。
         * `ESPAsyncWebServer`
-        * `AsyncTCP`
         * `ArduinoJson`
 
 3.  **LittleFS Uploaderのインストール:**
     * [ESP32 LittleFS Uploader](https://github.com/earlephilhower/arduino-littlefs-upload) のリリースページから `ESP32FS-*.zip` をダウンロードします。
-    * Arduinoの `tools` フォルダ（例: `Documents/Arduino/tools/`）に解凍して配置し、Arduino IDEを再起動します。
+    * Arduinoの `tools` フォルダ（例: `Documents/Arduino/tools/`）に解凍して配置し、Arduino IDEを再起動します。  
+    [こちらのサイトも参照してください。](https://qiita.com/kumakumao/items/be51f174bfeb0e4a6a06)  
 
 ### 2. UIファイルの書き込み
 
